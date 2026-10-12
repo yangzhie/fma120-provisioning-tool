@@ -2,7 +2,7 @@ from serial.tools import list_ports
 
 def parse_company_id(value: str) -> int:
     """
-    Convert CLI args from strings -> hex.
+    Convert CLI args from strings -> hex
 
     e.g.
         "1234"

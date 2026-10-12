@@ -20,25 +20,25 @@ STOPS = {
     1: Stop(
         index=1,
         name="Stop 1",
-        folder="Stop 1",
+        folder="Stop1",
         audio_stem="audio1"
     ),
     2: Stop(
         index=2,
         name="Stop 2",
-        folder="Stop 2",
+        folder="Stop2",
         audio_stem="audio2"
     ),
     3: Stop(
         index=3,
         name="Stop 3",
-        folder="Stop 3",
+        folder="Stop3",
         audio_stem="audio3"
     ),
     4: Stop(
         index=4,
         name="Stop 4",
-        folder="Stop 4",
+        folder="Stop4",
         audio_stem="audio4"
     )
 }
