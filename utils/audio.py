@@ -11,8 +11,6 @@ def play_audio(stop: Stop, audio_device: str | None):
     Flow: audio file -> pygame -> FMA USB device -> FMA120 transmitter -> Auracast broadcast
     """
 
-    import pygame
-
     # Obtain audio file for the stop
     audio_file = stop.audio_path
 

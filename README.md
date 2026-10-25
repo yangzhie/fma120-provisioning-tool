@@ -1,4 +1,4 @@
-# FMA120 Provisioning TOol
+# FMA120 Provisioning Tool
 Provisions FlooGoo FMA120/FMA121 transmitters and broadcasts their announcements over Auracast.
 
 Part of the [Auracast Companion](https://github.com/yangzhie/auracast-companion) proof-of-concept. It is a system that automatically connects hard-of-hearing riders' broadcast sinks (headphones, hearing aids, etc.) to the right broadcast at each stop of a journey. The companion application discovers these provisioned broadcasts and joins them.
@@ -13,12 +13,20 @@ Provisions a FMA120/FMA121 transmitter to become one public transport stop. Take
 - FMA120 firmware (1.1.6.7+)
 - A FMA120/FMA121 connected over USB
 
+Create a virtual Python 3.10 environment and activate
+```bash
+cd fma120-provisioning-tool
+py -3.10 -m venv .venv
+.venv\Scripts\activate
+```
+
+Install dependencies
 ```bash
 pip install pyserial pygame
 ```
 ## Usage
 1. Find the dongle's serial port: `python main.py list-ports`
-2. Provision the dongle: `python main.py provision --stop <number> --port <port(/dev/tty/<> // COM)> --company-id FFFF`
+2. Provision the dongle: `python main.py provision --stop <number> --route <number> --port <port(/dev/tty/<> // COM)> --company-id FFFF`
 3. Start broadcasting: `python main.py play --stop <stop>`
 
 Note: Windows uses `COM<number>`, Linux uses `/dev/tty/<ACM>`
@@ -30,8 +38,8 @@ Note: Windows uses `COM<number>`, Linux uses `/dev/tty/<ACM>`
 Expected file types: `.mp3`, `.mp4`, `.wav`
 ## Dongle Configuration
 Four BAI commands, sent over serial as `BC:<command>\r\n`:
-- `BN` - `AURA86-S1` - Broadcast name, shown in the phone's Auracast picker.
-- `BE` - `AURA86DEMO2026` - Broadcast code (encryption key, all stops share this).
+- `BN` - `AURAAC_R<number>_S<number>` - Broadcast name, shown in the phone's Auracast picker.
+- `BE` - `AURAAC_DEMO` - Broadcast code (encryption key, all stops share this).
 - `BI` - `560001` - Standard Auracast Broadcast ID.
 - `BF` - `0CFFFFFF415501560001000101` - Custom route/stop metadata.
 ## BF Metadata Layout
@@ -43,9 +51,8 @@ FF          AD type — manufacturer-specific data
 FF FF       company ID, little-endian (0xFFFF = reserved for testing)
 41 55       "AU" magic — identifies this project
 01          protocol version
-56 00       route ID (86), little-endian uint16
+56 00       route ID, little-endian uint16
 01          stop index
 00          direction (0 = outbound)
 01          language (1 = English)
-01          audio ID
 ```
