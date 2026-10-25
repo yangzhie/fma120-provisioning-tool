@@ -3,33 +3,12 @@ import pygame
 
 from classes.stop import Stop
 
-def list_audio_devices():
-    """
-    Audio output device discovery helper.
-    Identifies the FMA120 transmitter.
-    """
-
-    from pygame._sdl2 import (audio as sdl2_audio)
-
-    # Initialise pygame so audio devices can be queried
-    pygame.init()
-
-    # False = output devices
-    devices = (sdl2_audio.get_audio_device_names(False))
-
-    # Loop all output devices
-    for index, name in enumerate(devices):
-        print(f"[{index}] {name}")
-
-def play_audio(stop: Stop, audio_device: str | None, once: bool = False):
+def play_audio(stop: Stop, audio_device: str | None):
     """
     Play the audio file associated with a stop.
     Selected audio output should be FMA120 transmitter.
 
     Flow: audio file -> pygame -> FMA USB device -> FMA120 transmitter -> Auracast broadcast
-
-    If once=False, announcement loops.
-    If once=True, plays one time only.
     """
 
     # Obtain audio file for the stop
@@ -54,8 +33,8 @@ def play_audio(stop: Stop, audio_device: str | None, once: bool = False):
     # Load stop announcement
     pygame.mixer.music.load(str(audio_file))
 
-    # Play once (0) or loop (-1)
-    pygame.mixer.music.play(0 if once else -1)
+    # Play loop
+    pygame.mixer.music.play(-1)
 
     print(f"Playing {audio_file} -> {audio_device or 'default output'}")
     print("Terminate to stop")

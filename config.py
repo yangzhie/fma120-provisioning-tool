@@ -4,7 +4,7 @@
 ROUTE_ID = 86
 
 # Encryption key, shared by all stops
-SHARED_BROADCAST_CODE = "AURA86DEMO2026"
+SHARED_BROADCAST_CODE = "AURAAC_DEMO"
 
 # Two bytes at the front of every payload
 MAGIC = b"AU"

@@ -45,7 +45,7 @@ class Stop:
         Transmitter's UI-friendly broadcasted name.
         """
 
-        name = f"AURA86-S{self.index}"
+        name = f"AURAAC_STOP_NO{self.index}"
         return name
 
     # Standard Auracast broadcast ID
