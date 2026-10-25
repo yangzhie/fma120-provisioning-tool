@@ -1,5 +1,7 @@
 from serial.tools import list_ports
 
+from config import MAX_ROUTE_ID
+
 def parse_company_id(value: str) -> int:
     """
     Convert CLI args from strings -> hex
@@ -28,3 +30,17 @@ def list_serial_ports():
 
     for port in list_ports.comports():
         print(port.device, port.description)
+
+def parse_route_id(value: str) -> int:
+    """
+    Boundary check the --route arg.
+    """
+
+    # Convert to int first
+    route_id = int(value, 10)
+ 
+    # Boundary checking
+    if not 1 <= route_id <= MAX_ROUTE_ID:
+        raise ValueError(f"Route ID must be between 1 and {MAX_ROUTE_ID}")
+ 
+    return route_id

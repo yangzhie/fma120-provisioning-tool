@@ -1,7 +1,7 @@
-"""Shared constants"""
-
-# Route number: distinguishes unique routes to avoid overlap
-ROUTE_ID = 86
+# Default Route ID when --route is omitted
+ROUTE_ID = 1
+# Highest Route ID the Broadcast ID layout can have
+MAX_ROUTE_ID = 0xFF
 
 # Encryption key, shared by all stops
 SHARED_BROADCAST_CODE = "AURAAC_DEMO"

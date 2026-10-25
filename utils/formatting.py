@@ -1,20 +1,20 @@
 import struct
 
 from classes.stop import Stop
-from main import MAGIC, PROTOCOL_VERSION, ROUTE_ID
+from config import MAGIC, PROTOCOL_VERSION, ROUTE_ID
 
 def build_payload(stop: Stop) -> bytes:
     """
     Builds the custom 9 bytes.
 
     Layout:
-    AU(MAGIC)-PROTOCOL_VERSION-ROUTE_ID-INDEX-DIRECTION-LANGUAGE-AUDIO_ID
+    MAGIC (AU), PROTOCOL_VERSION, ROUTE_ID, STOP ID, DIRECTION, LANGUAGE
     """
 
     return (
         MAGIC
         + bytes([PROTOCOL_VERSION])
-        + struct.pack("<H", ROUTE_ID)
+        + struct.pack("<H", stop.route_id)
         + bytes([stop.index, stop.direction, stop.language])
     )
 
@@ -22,7 +22,7 @@ def build_bf_hex(stop: Stop, company_id: int) -> str:
     """
     Takes the payload and wraps it in standard BLE advertising data
 
-    Layout: Length-0xFF-Company ID-AU-Protocol Version-Route ID-Stop ID-Direction-Language-Audio ID
+    Layout: Length, Company ID (0xFFFF), Magic (AU), Version, Route ID, Stop ID, Direction, Language
     """
 
     # 9-byte inner payload
@@ -69,27 +69,10 @@ def decode_bf_hex(bf_hex: str) -> dict:
 
     # Extract each field from payload
     return {
-        "company_id":
-            company_id,
-
-        "version":
-            payload[2],
-
-        "route_id":
-            int.from_bytes(
-                payload[3:5],
-                "little"
-            ),
-
-        "stop_index":
-            payload[5],
-
-        "direction":
-            payload[6],
-
-        "language":
-            payload[7],
-
-        "audio_id":
-            payload[8]
+        "company_id": company_id,
+        "version": payload[2],
+        "route_id": int.from_bytes(payload[3:5], "little"),
+        "stop_index": payload[5],
+        "direction": payload[6],
+        "language": payload[7],
     }

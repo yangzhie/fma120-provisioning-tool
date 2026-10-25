@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 import argparse
+from dataclasses import replace
 
 from classes.dongle import *
 from classes.stop import *
@@ -8,12 +9,7 @@ from utils.audio import *
 from utils.formatting import *
 from utils.utils import *
 
-from config import (
-    ROUTE_ID,
-    SHARED_BROADCAST_CODE,
-    MAGIC,
-    PROTOCOL_VERSION
-)
+from config import ROUTE_ID
 
 # Dedicated/hard-coded stops dictionary for the proof-of-concept
 STOPS = {
@@ -43,6 +39,17 @@ STOPS = {
     )
 }
 
+def stop_on_route(stop_index: int, route_id: int) -> Stop:
+    """
+    Fetch a stop from the hard-coded table and place it on a route.
+ 
+    Stop is frozen, and STOPS is built at import time before argparse
+    has run, so the override has to go through a copy.
+    """
+ 
+    return replace(STOPS[stop_index], route_id=route_id)
+
+
 def main():
     """
     Driver function, CLI entry point.
@@ -61,14 +68,11 @@ def main():
     # Find which port the FMA120 is on
     subparsers.add_parser("list-ports", help="List available serial ports")
 
-    # Print all stops' config and BF hex
-    show_spec = subparsers.add_parser("show-spec", help="Show metadata for all Route 86 stops")
-    show_spec.add_argument("--company-id", required=True, help="Bluetooth Company ID in hexadecimal")
-
     # Write config to FMA120
     provision = subparsers.add_parser("provision", help="Configure an FMA120 for a selected stop")
     provision.add_argument("--port", required=True, help="Serial / COM port of the FMA120")
     provision.add_argument("--stop", type=int, choices=range(1, 5), required=True, help="Stop number from 1 to 4")
+    provision.add_argument("--route", type=parse_route_id, default=ROUTE_ID, help=f"Route number (default {ROUTE_ID})")
     provision.add_argument("--company-id", required=True, help="Bluetooth Company ID in hexadecimal")
 
     # Loop a stop's audio
@@ -80,7 +84,7 @@ def main():
     if args.cmd == "list-ports":
         list_serial_ports()
     elif args.cmd == "provision":
-        stop = STOPS[args.stop]
+        stop = stop_on_route(args.stop, args.route)
         company_id = parse_company_id(args.company_id)
         device = FMA120(args.port)
         try:
@@ -88,7 +92,7 @@ def main():
         finally:
             device.close()
     elif args.cmd == "play":
-        play_audio(STOPS[args.stop], args.audio_device)
+        play_audio(STOPS[args.stop])
 
 if __name__ == "__main__":
     """

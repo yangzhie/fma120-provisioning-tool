@@ -2,7 +2,7 @@ import serial
 
 from classes.stop import Stop
 from utils.formatting import build_bf_hex
-from main import SHARED_BROADCAST_CODE
+from config import SHARED_BROADCAST_CODE
 
 class FMA120:
     """

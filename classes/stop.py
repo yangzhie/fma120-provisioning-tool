@@ -16,6 +16,7 @@ class Stop:
     audio_stem: str
     direction: int = DIRECTION_OUTBOUND
     language: int = LANGUAGE_ENGLISH
+    route_id: int = ROUTE_ID
 
     @property
     def audio_path(self) -> Path:
@@ -45,7 +46,7 @@ class Stop:
         Transmitter's UI-friendly broadcasted name.
         """
 
-        name = f"AURAAC_STOP_NO{self.index}"
+        name = f"AURAAC_R{self.route_id}_S{self.index}"
         return name
 
     # Standard Auracast broadcast ID
@@ -57,4 +58,4 @@ class Stop:
         3 bytes long.
         """
 
-        return f"{ROUTE_ID:02X}00{self.index:02X}"
+        return f"{self.route_id:02X}00{self.index:02X}"
