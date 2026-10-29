@@ -3,7 +3,7 @@ import pygame
 
 from classes.stop import Stop
 
-def play_audio(stop: Stop, audio_device: str | None):
+def play_audio(stop: Stop, audio_device: str | None = None):
     """
     Play the audio file associated with a stop.
     Selected audio output should be FMA120 transmitter.
